@@ -33,15 +33,24 @@ describe('execute functions stored using their arguments', () => {
   it('should call each functions stored in lazy instance', () => {
     const functionSpy = sinon.spy();
     const lazy = new Lazy();
-    const sum = (a, b) => {
-      return a + b;
-    };
+   
     const a = 2;
     const b = 3;
 
     lazy.add(functionSpy, a, b);
     lazy.run();
-    expect(functionSpy).to.be.called;
+    expect(functionSpy).to.be.calledWith(a, b);
   });
+
+  it('should return the result for each function called', () => {
+    const lazy = new Lazy();
+    const sum = (a, b) => {
+      return a + b;
+    };
+    
+    lazy.add(sum, 1, 2);
+    lazy.add(sum, 24, 26)
+    expect(lazy.run()).to.eql([3, 50]);
+  })
 });
 
