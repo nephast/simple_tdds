@@ -5,7 +5,10 @@
 // check final global result
 
 const chai = require('chai');
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 expect = chai.expect;
+chai.use(sinonChai);
 
 const { Lazy } = require('../src/lazy');
 
@@ -22,7 +25,23 @@ describe('add function and their arguments to Lazy instance', () => {
 
     lazy.add(fn, ...args);
     expect(lazy.storage.length).to.equal(1);
-    expect(lazy.storage[0]).to.have.key(fn);
-  })
+    expect(lazy.storage[0]).to.have.keys(['fn', 'args']);
+  });
+});
+
+describe('execute functions stored using their arguments', () => {
+  it('should call each functions stored in lazy instance', () => {
+    const functionSpy = sinon.spy();
+    const lazy = new Lazy();
+    const sum = (a, b) => {
+      return a + b;
+    };
+    const a = 2;
+    const b = 3;
+
+    lazy.add(functionSpy, a, b);
+    lazy.run();
+    expect(functionSpy).to.be.called;
+  });
 });
 

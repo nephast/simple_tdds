@@ -3,8 +3,15 @@ class Lazy {
     this.storage = [];
   }
   add(fn, ...args) {
-    return this.storage.push({[fn]: args})
+    this.storage.push({ fn, args });
   }
+
+  run() {
+    this.storage.forEach(object => {
+      object.fn(object.args);
+    })
+  }
+
 }
 
 module.exports = {
